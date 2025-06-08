@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lebenslauf Yannik Brand</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlalTjs12kE+8r3m4D1a1B7y/j8X0+v6+7Q2Q7z7l02/7U04W4+K/7F9b9t9g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Hintergrund: Reines Weiß für eine professionelle und ruhige Optik */
+            background-color: #FFFFFF;
+            color: #333333; /* Haupttext Dunkelgrau für Lesbarkeit */
+            padding: 0;
+            margin: 0;
+            line-height: 1.5; /* Standard-Zeilenhöhe für gute Lesbarkeit */
+        }
+
+        /* Akzentfarbe für Überschriften und Icons */
+        .accent-color {
+            color: #EF4444; /* Roter Akzent wie zuvor */
+        }
+        .section-heading {
+            border-bottom: 2px solid #E0E0E0; /* Hellgraue Trennlinie */
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .bullet-point-icon::before {
+            content: '•'; /* Unicode Aufzählungszeichen */
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+            color: #EF4444; /* Akzentfarbe für Aufzählungszeichen im Hauptteil */
+        }
+        /* Spezifische Farbe für Bullet Points in der linken Spalte */
+        .left-column .bullet-point-icon::before {
+            color: #FFFFFF; /* Weiße Bullet Points für bessere Lesbarkeit auf dunklem Hintergrund */
+        }
+
+
+        /* Regeln für das Profilbild */
+        .profile-image-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer; /* Zeigt an, dass es klickbar ist */
+            /* Subtiler, langsamer Schatten als Klick-Hinweis */
+            animation: idle-subtle-glow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes idle-subtle-glow {
+            0% { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); } /* Standard Schatten */
+            100% { box-shadow: 0 4px 6px 15px rgba(255, 215, 0, 0.6), 0 2px 4px 8px rgba(255, 215, 0, 0.3); } /* Deutlicherer Gelb-Schatten */
+        }
+
+        .profile-image-wrapper:hover,
+        .profile-image-wrapper.clicked-glow {
+            animation-play-state: paused; /* Pausiert die Idle-Animation bei Hover oder Klick-Glow */
+            /* Stellt sicher, dass der Standard-Schatten wiederhergestellt wird, bevor der Klick-Glow greift */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .profile-image {
+            transition: transform 0.3s ease-in-out; /* Nur Transform-Transition, Border-Color wird per JS/Class gesetzt */
+            transform-origin: center center;
+            /* Standard-Zoom wird per JS gesetzt */
+        }
+
+        /* Click glow effect für den Rahmen */
+        .profile-image-wrapper.clicked-glow {
+            animation: border-glow-pulse 0.3s ease-out; /* Schneller und deutlicher */
+        }
+
+        @keyframes border-glow-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 1); } /* Start mit vollem Glow */
+            100% { box-shadow: 0 0 0 40px rgba(255, 215, 0, 0); } /* Noch weiter expandieren und ausfaden */
+        }
+
+        /* Hire Me Banner */
+        .hire-me-banner {
+            position: absolute;
+            top: 50%; /* Zentriert vertikal im Wrapper */
+            left: 50%; /* Zentriert horizontal im Wrapper */
+            /* Startet von unten und ist kleiner */
+            transform: translate(-50%, 50%) scale(0.5); 
+            padding: 1rem 2rem; /* Größerer Innenabstand */
+            background-image: linear-gradient(to right, #BE3175, #A02860); /* Verlaufender Hintergrund */
+            color: white;
+            border-radius: 9999px; /* Pillenform */
+            font-weight: bold;
+            font-size: 1.8rem; /* Größere Schrift */
+            opacity: 0; /* Standardmäßig unsichtbar */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* Längere, sanftere Übergänge */
+            z-index: 20; /* Über dem Bild */
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6); /* Starker Schatten für das Banner */
+        }
+        .hire-me-active {
+            opacity: 1; /* Sichtbar, wenn aktiv */
+            transform: translate(-50%, -50%) scale(1); /* Skaliert auf normale Größe und zentriert sich */
+        }
+        .hire-me-fading-out {
+            opacity: 0;
+            transform: translate(-50%, 50%) scale(0.5); /* Fadet nach unten und wird kleiner beim Ausblenden */
+        }
+
+        /* Sticky-Effekt nur für größere Bildschirme (Desktop) */
+        .left-column-sticky {
+            position: static; /* Standardmäßig nicht sticky auf kleinen Bildschirmen */
+        }
+        @media (min-width: 1024px) { /* Ab 'lg' Breakpoint (1024px) wird es sticky */
+            .left-column-sticky {
+                position: sticky;
+                top: 0px; /* Abstand vom oberen Rand beim Sticky-Effekt auf 0 gesetzt */
+                align-self: flex-start; /* Stellt sicher, dass die Box oben klebt und nicht streckt */
+                z-index: 10; /* Damit sie über Inhalten der rechten Spalte liegt, wenn gescrollt wird */
+            }
+        }
+
+        /* Sektionen und Hauptcontainer bleiben hell */
+        .main-content-card { /* Neue Klasse für den Hauptcontainer */
+            background-color: #ffffff; /* Hintergrund Weiß */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Sanfter Schatten */
+            border-radius: 8px; /* Abgerundete Ecken */
+            padding: 3rem 1rem; /* Vertikales Padding hier hinzugefügt */
+        }
+        @media (min-width: 640px) { /* Anpassung für sm-Breakpoint */
+            .main-content-card {
+                padding: 3rem 2rem;
+            }
+        }
+        @media (min-width: 1024px) { /* Anpassung für lg-Breakpoint */
+            .main-content-card {
+                padding: 3rem;
+            }
+        }
+
+        section {
+            background-color: #ffffff; /* Hintergrundfarbe für die Sektionen */
+            border-radius: 8px; /* Abgerundete Ecken für den "Karten"-Look */
+            padding: 2rem; /* Innenabstand für den Inhalt der Sektion */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); /* Leichterer Schatten für helle Sektionen */
+            margin-bottom: 2rem; /* Abstand zwischen den Sektionen */
+            color: #333333; /* Textfarbe für Sektionen */
+        }
+        /* Anpassung des letzten Sektionsabstands */
+        section:last-of-type {
+            margin-bottom: 0;
+        }
+        /* Anpassung des section-heading, da jetzt padding auf der section ist */
+        .section-heading {
+            margin-top: 0; /* Kein Top-Margin, da Section Padding hat */
+            margin-bottom: 1.5rem; /* Abstand unter der Überschrift */
+            padding-top: 0; /* Kein Top-Padding, da Section Padding hat */
+        }
+        /* Anpassung der Textfarben in Sektionen für bessere Lesbarkeit auf hellem Hintergrund */
+        section h3 {
+            color: #333333; /* Überschriften in Sektionen dunkel */
+        }
+        section p.text-gray-600 {
+            color: #666666; /* Datum/Ort in Sektionen dunkler Grau */
+        }
+        section ul.text-gray-700 li {
+            color: #444444; /* Listenpunkte in Sektionen dunkler Grau */
+        }
+        /* Links in der linken Spalte */
+        /* Diese Regeln wurden durch direkte Tailwind-Klassen im HTML ersetzt */
+        /* .left-column-sticky a {
+            color: #FFFFFF;
+        }
+        .left-column-sticky a:hover {
+            color: #F0F0F0;
+        } */
+
+        /* Anpassungen für Druckansicht (für PDF-Generierung) */
+        @media print {
+            body {
+                background-color: #FFFFFF !important; /* Sicherstellen, dass der Hintergrund weiß bleibt */
+                font-size: 10pt; /* Kleinere Schrift für den Druck */
+            }
+            .main-content-card {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                width: auto !important; /* Auto-Breite, um sich an die Seitenränder anzupassen */
+                max-width: none !important; /* Keine maximale Breite */
+                margin: 0 !important; /* Keine zusätzlichen Margins */
+                padding: 0 !important; /* Kein Padding hier, da @page margin gesetzt ist */
+                display: block !important;
+                flex-direction: column !important;
+            }
+
+            /* Spalten für den Druck stapeln und volle Breite einnehmen */
+            .lg\:w-1\/3, .lg\:w-2\/3 {
+                width: 100% !important;
+                padding: 0.5cm 0 !important; /* Etwas vertikales Padding für Abschnitte, kein horizontales */
+            }
+
+            .left-column-sticky {
+                position: static !important;
+                margin-bottom: 1cm !important; /* Abstand unter dem Header-Bereich */
+                padding-top: 0.5cm !important; /* Etwas Padding oben für den Header-Bereich */
+                padding-bottom: 0.5cm !important; /* Etwas Padding unten für den Header-Bereich */
+                padding-left: 0 !important; /* Kein Padding von p-8 für Print */
+                padding-right: 0 !important; /* Kein Padding von p-8 für Print */
+                text-align: left !important; /* Text im Header linksbündig für Print */
+                align-items: flex-start !important; /* Elemente im Header linksbündig für Print */
+            }
+            .left-column-sticky h1,
+            .left-column-sticky p {
+                text-align: left !important; /* Sicherstellen, dass der Text im Header linksbündig ist */
+            }
+            .left-column-sticky .w-24 { /* Die Akzentlinie */
+                margin-left: 0 !important; /* Links ausrichten */
+            }
+
+
+            /* Animationen/Übergänge für den Druck entfernen */
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+
+            /* Sicherstellen, dass Textfarben lesbar sind */
+            .header-bg {
+                background-color: #333333 !important;
+                color: #ffffff !important;
+            }
+            .accent-color {
+                color: #BE3175 !important;
+            }
+            section h3 {
+                color: #333333 !important;
+            }
+            section p.text-gray-600 {
+                color: #666666 !important;
+            }
+            section ul.text-gray-700 li {
+                color: #444444 !important;
+            }
+            .left-column-sticky a {
+                color: #ffffff !important; /* Links in linker Spalte im Druck weiß */
+            }
+            .left-column-sticky a:hover {
+                color: #F0F0F0 !important;
+            }
+
+            /* Sicherstellen, dass der Profilbild-Zoom erhalten bleibt und keine interaktiven Elemente sichtbar sind */
+            .profile-image-wrapper {
+                box-shadow: none !important;
+                animation: none !important;
+                width: 150px !important; /* Kleinere Größe für das Bild im Print-Header */
+                height: 150px !important;
+                margin-bottom: 0.5cm !important;
+            }
+            .profile-image {
+                transform: scale(2.2) !important; /* Zoom beibehalten */
+                transition: none !important;
+            }
+
+            /* Interaktive Elemente ausblenden */
+            #hire-me-banner {
+                display: none !important;
+            }
+            .clicked-glow, .idle-subtle-glow {
+                animation: none !important;
+            }
+
+            /* Ensure sections don't break across pages awkwardly */
+            section {
+                page-break-inside: avoid;
+            }
+            h2.section-heading {
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="flex justify-center">
+    <div class="main-content-card rounded-lg w-full max-w-5xl lg:flex">
+        
+        <div class="left-column lg:w-1/3 p-8 bg-gray-800 text-white flex flex-col items-center text-center lg:text-left lg:items-start left-column-sticky">
+            <div class="profile-image-wrapper w-64 h-64 rounded-full mb-6 border-4 border-white shadow-lg" id="profile-image-container">
+                <img src="https://raw.githubusercontent.com/brandy299/yannik-lebenslauf/main/bewerbungsfoto_06.jpg" alt="Bewerbungsfoto von Yannik Brand" class="object-cover w-full h-full profile-image" id="profile-image">
+                <div id="hire-me-banner" class="hire-me-banner">HIRE ME!</div>
+            </div>
+            
+            <h1 class="text-4xl font-bold mb-2">Yannik Brand</h1>
+            <p class="text-lg font-light mb-8 text-white text-center">Bildungsexperte & Politikwissenschaftler</p>
+            
+            <div class="w-full mb-8">
+                <h2 class="text-xl font-semibold mb-4 border-b border-gray-500 pb-2 text-white">Kontakt</h2>
+                <ul class="space-y-2 text-sm text-white">
+                    <li><i class="fa-solid fa-location-dot mr-2"></i> Kardinal Galen Straße 44, 47051 Duisburg</li>
+                    <li><i class="fa-solid fa-phone mr-2"></i> <a href="tel:+4917691360115" class="underline hover:text-white text-white">(+49) 176 91360115</a></li>
+                    <li><i class="fa-solid fa-envelope mr-2"></i> <a href="mailto:yannik.brand.work@gmail.com" class="underline hover:text-white text-white">yannik.brand.work@gmail.com</a></li>
+                    </ul>
+            </div>
+
+            <div class="w-full">
+                <h2 class="text-xl font-semibold mb-4 border-b border-gray-500 pb-2 text-white">Kurzprofil</h2>
+                <p class="text-sm leading-relaxed text-white">
+                    <strong>Engagierter Projektmanager und Pädagoge</strong> mit über 4 Jahren Erfahrung im Projektmanagement, Marketing und 6 Jahren Lehre. Ich konzipiere und realisiere wirkungsvolle Bildungsmaßnahmen und Events. Mein <strong>Master in European Culture and Economy</strong> und meine Affinität für digitale Bildung ermöglichen es mir, politische Inhalte zielgruppengerecht aufzubereiten und die digitale Präsenz der DGB Jugend NRW zu stärken.
+                </p>
+            </div>
+        </div>
+
+        <div class="lg:w-2/3 p-8">
+            <section> <h2 class="text-2xl font-semibold section-heading accent-color">Berufserfahrung</h2>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-lg font-semibold">Lehrkraft (Englisch, Geschichte, Politik, Wirtschaft)</h3>
+                        <p class="text-gray-600 text-sm mb-1">Gustav-Stresemann-Realschule Duisburg (u. a.) & Berufskolleg am Haspel, Wuppertal | 09/2018 – 02/2025</p>
+                        <ul class="list-none pl-4 space-y-1 text-sm text-gray-700">
+                            <li class="bullet-point-icon">Konzeption & didaktische Vermittlung komplexer Lehrinhalte (Geschichte, Politik, Wirtschaft, Englisch).</li>
+                            <li class="bullet-point-icon">Entwicklung von Lehrstrategien & Curricula; Förderung kritischen Denkens & Beteiligung.</li>
+                            <li class="bullet-point-icon">Gruppenleitung & Moderation: Aktive Begleitung und Anleitung von Gruppen, Förderung von Diskussionen und konstruktiver Zusammenarbeit.</li>
+                            <li class="bullet-point-icon">Eigenverantwortliche Planung & Durchführung von Unterrichtseinheiten & Projekten.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold">Projektmanager & Marketingverantwortlicher</h3>
+                        <p class="text-gray-600 text-sm mb-1">GAYA Entertainment GmbH | 05/2014 – 07/2018</p>
+                        <ul class="list-none pl-4 space-y-1 text-sm text-gray-700">
+                            <li class="bullet-point-icon">Projektkoordination: Konzeptentwicklung, Abwicklung & Monitoring vielfältiger Projekte (oft mit Bildungs- oder Eventcharakter).</li>
+                            <li class="bullet-point-icon">Budgetverwaltung: Eigenständige Finanzplanung, Budgetüberwachung & Kalkulation von Maßnahmen.</li>
+                            <li class="bullet-point-icon">Partnerkommunikation: Aufbau & Pflege von Beziehungen zu internen und externen Projektpartnern sowie Stakeholdern.</li>
+                            <li class="bullet-point-icon">Organisatorische Verantwortung: Koordination logistischer & administrativer Abläufe für Veranstaltungen & Workshops.</li>
+                            <li class="bullet-point-icon">Marketing & Reichweite: Entwicklung & Umsetzung von Maßnahmen zur Bewerbung von Projekten & zur Teilnehmenden-Akquisition.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold">Praktikant Stabsstelle für Europaangelegenheiten</h3>
+                        <p class="text-gray-600 text-sm mb-1">Stadt Essen | 01/2024 – 03/2024</p>
+                        <ul class="list-none pl-4 space-y-1 text-sm text-gray-700">
+                            <li class="bullet-point-icon">Unterstützung bei der Kommunikation & Koordination europäischer Angelegenheiten im öffentlichen Sektor.</li>
+                            <li class="bullet-point-icon">Einblicke in die Verwaltungskommunikation & die Aufbereitung politischer Inhalte.</li>
+                            <li class="bullet-point-icon">Mitarbeit an Konzeption & Durchführung von Aktionen (Ruhr-Europakampagne "Lets Europe").</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section> <h2 class="text-2xl font-semibold section-heading accent-color">Ausbildung</h2>
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-lg font-semibold">M.A. European Culture and Economy (ECUE)</h3>
+                        <p class="text-gray-600 text-sm mb-1">Ruhr-Universität Bochum | 10/2021 – 03/2024</p>
+                        <ul class="list-none pl-4 space-y-1 text-sm text-gray-700">
+                            <li class="bullet-point-icon">Schwerpunkte: Europäische Politik, Förderstrukturen, Transformationsprozesse, Policy-Analysen.</li>
+                            <li class="bullet-point-icon">Analyse komplexer gesellschaftlicher & politischer Themen (relevant für Konzeption & Evaluation von Bildungsangeboten).</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold">B.A. 2-Fach Bachelor of Arts Englisch und Geschichte</h3>
+                        <p class="text-gray-600 text-sm mb-1">Ruhr-Universität Bochum | 04/2011 – 03/2021</p>
+                        <ul class="list-none pl-4 space-y-1 text-sm text-gray-700">
+                            <li class="bullet-point-icon">Stärkung analytischer & textlicher Fähigkeiten durch wissenschaftliches Arbeiten & Diskursanalyse.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section> <h2 class="text-2xl font-semibold section-heading accent-color">Fähigkeiten & Tools</h2>
+                <div class="space-y-4 text-sm text-gray-700">
+                    <div>
+                        <h3 class="font-semibold mb-1">Organisation, Koordination & Kommunikation:</h3>
+                        <ul class="list-none pl-4 space-y-1">
+                            <li class="bullet-point-icon">Ausgeprägte Fähigkeit zu organisieren, Termin- und Projektmanagement sowie Veranstaltungsplanung.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-1">Kommunikation:</h3>
+                        <ul class="list-none pl-4 space-y-1">
+                            <li class="bullet-point-icon">Sehr gute Kommunikationsfähigkeiten, Präsentations- und Moderationstechniken, zielgruppengerechte Ansprache.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-1">Digitale Tools:</h3>
+                        <ul class="list-none pl-4 space-y-1">
+                            <li class="bullet-point-icon">MS Office 365 (Word, Excel, PowerPoint, Outlook), Cloud-Kollaborationstools (z.B. MS Teams, Slack), Figma/Canva/Adobe Suite.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-1">Analytische Fähigkeiten:</h3>
+                        <ul class="list-none pl-4 space-y-1">
+                            <li class="bullet-point-icon">Schnelle Einarbeitung in neue Themenfelder, Evaluationskompetenz, Datenanalyse.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-1">Soft Skills:</h3>
+                        <ul class="list-none pl-4 space-y-1">
+                            <li class="bullet-point-icon">Hohe Flexibilität und Einsatzbereitschaft, Teamfähigkeit, Zuverlässigkeit, Eigeninitiative, strukturiertes Arbeiten.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section> <h2 class="text-2xl font-semibold section-heading accent-color">Sprachen & Interessen</h2>
+                <div class="space-y-4 text-sm text-gray-700">
+                    <div>
+                        <h3 class="font-semibold mb-1">Sprachen:</h3>
+                        <ul class="list-none pl-4 space-y-1">
+                            <li class="bullet-point-icon">Deutsch (Muttersprache), Englisch (verhandlungssicher), Grundkenntnisse in Französisch, Latinum.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-1">Interessen:</h3>
+                        <ul class="list-none pl-4 space-y-1">
+                            <li class="bullet-point-icon">Ausgeprägtes und ideologisch fest verankertes Interesse an gewerkschaftlicher Jugend- und Bildungsarbeit, gesellschaftlicher Partizipation und politischer Bildung. Bereitschaft zu Wochenendarbeit und Abendterminen.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileImageContainer = document.getElementById('profile-image-container'); // Wrapper for the image
+            const profileImage = profileImageContainer.querySelector('img');
+            const hireMeBanner = document.getElementById('hire-me-banner');
+            let clickCount = 0;
+            const defaultScale = 1.4; // Initial scale of the image
+            const hoverScale = 1.6; // Scale on mouse hover
+            const clickZoomLevels = [1.9, 2.1, 2.3, 2.5]; // These are absolute scales for progressive zoom
+
+            let currentZoomTimeout;
+
+            // Set initial scale on load
+            profileImage.style.transform = `scale(${defaultScale})`;
+
+            if (profileImageContainer && profileImage) {
+                // Mouseenter event for hover zoom
+                profileImageContainer.addEventListener('mouseenter', () => {
+                    // Only apply hover zoom if no click-zoom is currently active
+                    // (i.e., no specific scale set by a click that hasn't reset yet)
+                    if (profileImage.style.transform === `scale(${defaultScale})` || profileImage.style.transform === '') {
+                        profileImage.style.transform = `scale(${hoverScale})`;
+                    }
+                    // Pause the idle glow animation
+                    profileImageContainer.style.animationPlayState = 'paused';
+                });
+
+                // Mouseleave event to revert from hover zoom
+                profileImageContainer.addEventListener('mouseleave', () => {
+                    // Only revert from hover if no click-zoom is currently active
+                    if (profileImage.style.transform === `scale(${hoverScale})`) {
+                        profileImage.style.transform = `scale(${defaultScale})`;
+                    }
+                    // Resume the idle glow animation
+                    profileImageContainer.style.animationPlayState = 'running';
+                });
+
+
+                profileImageContainer.addEventListener('click', () => {
+                    clickCount++;
+
+                    // Apply click glow effect to the wrapper
+                    profileImageContainer.classList.add('clicked-glow');
+                    setTimeout(() => {
+                        profileImageContainer.classList.remove('clicked-glow');
+                    }, 500); // Duration of the glow animation
+
+                    // Apply progressive zoom based on click count
+                    if (clickCount <= clickZoomLevels.length) {
+                        profileImage.style.transform = `scale(${clickZoomLevels[clickCount - 1]})`;
+                    } else {
+                        // If more clicks than defined levels, maintain max zoom
+                        profileImage.style.transform = `scale(${clickZoomLevels[clickZoomLevels.length - 1]})`;
+                    }
+
+                    // Clear any existing timeout for zoom reset
+                    if (currentZoomTimeout) {
+                        clearTimeout(currentZoomTimeout);
+                    }
+
+                    // Set a timeout to reset zoom after 2 seconds, unless another click happens
+                    // This timeout is only set if the banner is NOT about to appear
+                    if (clickCount < 4) {
+                        currentZoomTimeout = setTimeout(() => {
+                            profileImage.style.transform = `scale(${defaultScale})`; // Revert to default scale
+                        }, 2000); // Zoom fades back after 2 seconds
+                    }
+
+                    // Show and fade out "Hire Me!" banner after 4 clicks
+                    if (clickCount >= 4) {
+                        hireMeBanner.classList.add('hire-me-active');
+                        // Clear any pending zoom reset timeout
+                        if (currentZoomTimeout) {
+                            clearTimeout(currentZoomTimeout);
+                        }
+                        setTimeout(() => {
+                            hireMeBanner.classList.remove('hire-me-active');
+                            hireMeBanner.classList.add('hire-me-fading-out'); // Add fading out class
+                            setTimeout(() => {
+                                hireMeBanner.classList.remove('hire-me-fading-out'); // Remove after animation
+                                clickCount = 0; // Reset click count after banner fades out
+                                profileImage.style.transform = `scale(${defaultScale})`; // Ensure image resets to default
+                            }, 500); // Duration of the fade-out animation
+                        }, 1000); // Banner stays active for 1 second
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
